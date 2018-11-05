@@ -1,0 +1,36 @@
+#!/bin/sh
+
+[ $(printf %.1s "$0") == / ] && SCRIPT_PATH="$0" || SCRIPT_PATH="$PWD/$0"
+SCRIPT_DIR=${SCRIPT_PATH%/*}/
+
+alias echo="echo [NIMIX]"
+
+CMD=$1
+case $CMD in
+
+    build | release )
+        echo "$(nim --version | head -n 1)"
+        "$0" clean
+        mkdir "$SCRIPT_DIR/bin"
+        for FILE in "$SCRIPT_DIR/src/"*.nim; do
+            DEST=$SCRIPT_DIR/bin/${FILE#$SCRIPT_DIR/src/}
+            DEST=${DEST%.nim}
+            echo "Building ${FILE#$SCRIPT_DIR}"
+            nim c --out:"$DEST" "$FILE"
+        done
+    ;;
+
+    clean )
+        rm -r "$SCRIPT_DIR/bin" 2> /dev/null
+    ;;
+
+    clean-all )
+        "$0" clean
+        rm -r "$SCRIPT_DIR/src/nimcache" 2> /dev/null
+    ;;
+
+    * )
+        echo "$0 { build | clean | clean-all }"
+    ;;
+
+esac
