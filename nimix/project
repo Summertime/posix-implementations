@@ -16,7 +16,9 @@ case $CMD in
             DEST=$SCRIPT_DIR/bin/${FILE#$SCRIPT_DIR/src/}
             DEST=${DEST%.nim}
             echo "Building ${FILE#$SCRIPT_DIR}"
-            nim c --out:"$DEST" "$FILE"
+            ARGS=''
+            [ $CMD == release ] && ARGS='--define:release --opt:size'
+            nim c $ARGS --out:"$DEST" "$FILE"
         done
     ;;
 

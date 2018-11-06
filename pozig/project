@@ -16,7 +16,9 @@ case $CMD in
             DEST=$SCRIPT_DIR/bin/${FILE#$SCRIPT_DIR/src/}
             DEST=${DEST%.zig}
             echo "Building ${FILE#$SCRIPT_DIR}"
-            zig build-exe --cache-dir "$SCRIPT_DIR/zig-cache" "$FILE" --output "$DEST"
+            ARGS=''
+            [ $CMD == release ] && ARGS='--release-fast'
+            zig build-exe $ARGS --cache-dir "$SCRIPT_DIR/zig-cache" "$FILE" --output "$DEST"
         done
     ;;
 
