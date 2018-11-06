@@ -1,16 +1,20 @@
 const std = @import("std");
 const io = std.io;
 const os = std.os;
-const allocator = std.debug.global_allocator;
 
-pub fn main() !void {
+pub fn main() u8 {
+    main2() catch |err| {
+        return 1;
+    };
+    return 0;
+}
+
+fn main2() !void {
     var stdout_file = try io.getStdOut();
-
     var args = os.args();
-    const exe = try ?? args.next(allocator);
+    const exe = args.nextPosix();
     var spacing = false;
-    while (args.next(allocator)) |arg_or_err| {
-        var arg = try arg_or_err;
+    while (args.nextPosix()) |arg| {
         if (spacing) {
             try stdout_file.write(" ");
         } else {

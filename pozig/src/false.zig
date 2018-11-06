@@ -1,4 +1,3 @@
-const std = @import("std");
-pub fn main() void {
-    std.os.exit(1);
+pub fn main() u8 {
+    return 1;
 }
