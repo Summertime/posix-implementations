@@ -17,7 +17,7 @@ case $CMD in
     ;;
 
     test )
-        true
+        "$SCRIPT_DIR/tests/test"
     ;;
 
     * )

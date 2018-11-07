@@ -1,0 +1,42 @@
+#!/bin/sh
+
+[ "$(printf %.1s "$0")" = / ] && SCRIPT_PATH="$0" || SCRIPT_PATH="$PWD/$0"
+SCRIPT_DIR=${SCRIPT_PATH%/*}/
+
+. "$SCRIPT_DIR/utils"
+
+T_INIT
+
+for FOLDER in "$SCRIPT_DIR/../"*/; do
+    [ -e "$FOLDER/.projskip" ] && continue
+    [ ! -x "$FOLDER/project" ] && continue
+    . "$FOLDER/meta"
+    for EXE in "$FOLDER/bin/"*; do
+        EXE_NAME=${EXE##*/}
+
+        T_TESTCASE
+        case $EXE_NAME in
+
+            true )
+                # returns true
+                ASSERT_TRUE SILENCE "$EXE"
+            ;;
+
+            false )
+                # returns false
+                ASSERT_FALSE SILENCE "$EXE"
+            ;;
+
+            echo )
+            ;;
+
+            * )
+            ;;
+
+        esac
+        T_HAS_TESTCASE_PASSED && RES=PASS || RES=FAIL
+        printf '%s\t%s\t%s\n' "$PROJECT_NAME" "$EXE_NAME" "$RES"
+    done
+done
+
+T_HAS_ALL_PASSED ; exit # set error code

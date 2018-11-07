@@ -1,0 +1,43 @@
+#!/bin/sh
+SILENCE () {
+    "$@" > /dev/null
+}
+
+T_INIT () {
+    _T_TESTING_FAILED=
+}
+
+T_TESTCASE () {
+    _T_TESTCASE_FAILED=
+}
+
+T_FAIL () {
+    _T_TESTING_FAILED=.
+    _T_TESTCASE_FAILED=.
+}
+
+T_HAS_TESTCASE_FAILED () {
+    [ "X$_T_TESTCASE_FAILED" != "X" ]
+}
+
+T_HAS_TESTCASE_PASSED () {
+    [ "X$_T_TESTCASE_FAILED" = "X" ]
+}
+
+T_HAS_ALL_PASSED () {
+    [ "X$_T_TESTING_FAILED" = "X" ]
+}
+
+T_HAS_ANY_FAILED () {
+    [ "X$_T_TESTING_FAILED" = "X" ]
+}
+
+ASSERT_TRUE () {
+    "$@"
+    [ "$?" -ne "0" ] && T_FAIL
+}
+
+ASSERT_FALSE () {
+    "$@"
+    [ "$?" -eq "0" ] && T_FAIL
+}
