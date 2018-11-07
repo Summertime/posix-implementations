@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ $(printf %.1s "$0") == / ] && SCRIPT_PATH="$0" || SCRIPT_PATH="$PWD/$0"
+[ "$(printf %.1s "$0")" = / ] && SCRIPT_PATH="$0" || SCRIPT_PATH="$PWD/$0"
 SCRIPT_DIR=${SCRIPT_PATH%/*}/
 
 alias echo="echo [POS-IMP]"
@@ -9,8 +9,10 @@ CMD=$1
 case $CMD in
 
     build | release | clean )
-        for BIN in "$SCRIPT_DIR"/*/project; do
-            "$BIN" "$@"
+        for FOLDER in "$SCRIPT_DIR"/*/; do
+            [ -e "$FOLDER/.projskip" ] && continue
+            [ ! -x "$FOLDER/project" ] && continue
+            "$FOLDER/project" "$@"
         done
     ;;
 

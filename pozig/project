@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ $(printf %.1s "$0") == / ] && SCRIPT_PATH="$0" || SCRIPT_PATH="$PWD/$0"
+[ "$(printf %.1s "$0")" = / ] && SCRIPT_PATH="$0" || SCRIPT_PATH="$PWD/$0"
 SCRIPT_DIR=${SCRIPT_PATH%/*}/
 
 alias echo="echo [POZIG]"
@@ -9,22 +9,24 @@ CMD=$1
 case $CMD in
 
     build | release )
+        REL= ; [ "$CMD" = release ] && REL=.
         echo "$(zig version)"
         "$0" clean
         mkdir "$SCRIPT_DIR/bin"
         for FILE in "$SCRIPT_DIR/src/"*.zig; do
+            [ ! -e "$FILE" ] && break
             DEST=$SCRIPT_DIR/bin/${FILE#$SCRIPT_DIR/src/}
             DEST=${DEST%.zig}
             echo "Building ${FILE#$SCRIPT_DIR}"
-            ARGS=''
-            [ $CMD == release ] && ARGS='--release-fast'
-            zig build-exe $ARGS --cache-dir "$SCRIPT_DIR/zig-cache" "$FILE" --output "$DEST"
+            zig build-exe ${REL:+--release-fast} \
+                --cache-dir "$SCRIPT_DIR/zig-cache" \
+                "$FILE" --output "$DEST"
         done
     ;;
 
     clean )
-        rm -r "$SCRIPT_DIR/bin" 2> /dev/null
-        rm -r "$SCRIPT_DIR/zig-cache" 2> /dev/null
+        rm -r "${SCRIPT_DIR:?}/bin" 2> /dev/null
+        rm -r "${SCRIPT_DIR:?}/zig-cache" 2> /dev/null
     ;;
 
     * )
