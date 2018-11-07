@@ -1,0 +1,34 @@
+#!/bin/sh
+
+[ "$(printf %.1s "$0")" = / ] && SCRIPT_PATH="$0" || SCRIPT_PATH="$PWD/$0"
+SCRIPT_DIR=${SCRIPT_PATH%/*}/
+
+alias echo="echo [RAKIX]"
+
+CMD=$1
+case $CMD in
+
+    build | release )
+        REL= ; [ "$CMD" = release ] && REL=.
+        echo "$(perl6 --version | head -n1)"
+        "$0" clean
+        mkdir "$SCRIPT_DIR/bin"
+        for FILE in "$SCRIPT_DIR/src/"*.p6; do
+            [ ! -e "$FILE" ] && break
+            DEST=$SCRIPT_DIR/bin/${FILE#$SCRIPT_DIR/src/}
+            DEST=${DEST%.p6}
+            echo "Building ${FILE#$SCRIPT_DIR}"
+            cp "$FILE" "$DEST"
+        done
+        chmod +x "$SCRIPT_DIR/bin/"*
+    ;;
+
+    clean )
+        rm -r "${SCRIPT_DIR:?}/bin" 2> /dev/null
+    ;;
+
+    * )
+        echo "$0 { build | release | clean }"
+    ;;
+
+esac

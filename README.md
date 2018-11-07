@@ -8,4 +8,5 @@ The goal is to have a modern maintained implementation of each utility, for each
 
 * Nim : ./nimix
 * Zig : ./pozig
+* Raku Perl 6 : ./rakix
 * Your favorite language! (we welcome contributions!)
