@@ -3,6 +3,23 @@
 [ $(printf %.1s "$0") == / ] && SCRIPT_PATH="$0" || SCRIPT_PATH="$PWD/$0"
 SCRIPT_DIR=${SCRIPT_PATH%/*}/
 
-for BIN in "$SCRIPT_DIR"/*/project; do
-    "$BIN" "$@"
-done
+alias echo="echo [POS-IMP]"
+
+CMD=$1
+case $CMD in
+
+    build | release | clean | clean-all )
+        for BIN in "$SCRIPT_DIR"/*/project; do
+            "$BIN" "$@"
+        done
+    ;;
+
+    test )
+        true
+    ;;
+
+    * )
+        echo "$0 { build | release | clean | clean-all }"
+    ;;
+
+esac

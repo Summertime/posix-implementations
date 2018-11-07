@@ -32,7 +32,7 @@ case $CMD in
     ;;
 
     * )
-        echo "$0 { build | clean | clean-all }"
+        echo "$0 { build | release | clean | clean-all }"
     ;;
 
 esac
