@@ -24,15 +24,11 @@ case $CMD in
 
     clean )
         rm -r "$SCRIPT_DIR/bin" 2> /dev/null
-    ;;
-
-    clean-all )
-        "$0" clean
         rm -r "$SCRIPT_DIR/zig-cache" 2> /dev/null
     ;;
 
     * )
-        echo "$0 { build | release | clean | clean-all }"
+        echo "$0 { build | release | clean }"
     ;;
 
 esac

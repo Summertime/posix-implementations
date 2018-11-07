@@ -8,7 +8,7 @@ alias echo="echo [POS-IMP]"
 CMD=$1
 case $CMD in
 
-    build | release | clean | clean-all )
+    build | release | clean )
         for BIN in "$SCRIPT_DIR"/*/project; do
             "$BIN" "$@"
         done
@@ -19,7 +19,7 @@ case $CMD in
     ;;
 
     * )
-        echo "$0 { build | release | clean | clean-all }"
+        echo "$0 { build | release | clean }"
     ;;
 
 esac
