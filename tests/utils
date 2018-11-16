@@ -1,13 +1,13 @@
 #!/bin/sh
-SILENCE () {
-    "$@" > /dev/null
-}
+
+# Framework functions
 
 T_INIT () {
     _T_TESTING_FAILED=
 }
 
 T_TESTCASE () {
+    _T_TESTCASE_NAME="$@"
     _T_TESTCASE_FAILED=
 }
 
@@ -16,28 +16,31 @@ T_FAIL () {
     _T_TESTCASE_FAILED=.
 }
 
-T_HAS_TESTCASE_FAILED () {
-    [ "X$_T_TESTCASE_FAILED" != "X" ]
-}
+# Queries
 
-T_HAS_TESTCASE_PASSED () {
-    [ "X$_T_TESTCASE_FAILED" = "X" ]
-}
+T_HAS_TESTCASE_PASSED () { [ ! "$_T_TESTCASE_FAILED" ] ;}
+T_HAS_TESTCASE_FAILED () { [   "$_T_TESTCASE_FAILED" ] ;}
+T_HAS_ALL_PASSED () { [ ! "$_T_TESTING_FAILED" ] ;}
+T_HAS_ANY_FAILED () { [   "$_T_TESTING_FAILED" ] ;}
 
-T_HAS_ALL_PASSED () {
-    [ "X$_T_TESTING_FAILED" = "X" ]
-}
+# Testing decorators
 
-T_HAS_ANY_FAILED () {
-    [ "X$_T_TESTING_FAILED" = "X" ]
+SILENCE () { "$@" > /dev/null ;}
+
+ASSERT_SILENT () {
+    :
 }
 
 ASSERT_TRUE () {
     "$@"
-    [ "$?" -ne "0" ] && T_FAIL
+    ERRVAL=$?
+    [ 0 -ne "$ERRVAL" ] && T_FAIL
+    return "$ERRVAL"
 }
 
 ASSERT_FALSE () {
     "$@"
-    [ "$?" -eq "0" ] && T_FAIL
+    ERRVAL=$?
+    [ 0 -eq "$ERRVAL" ] && T_FAIL
+    return "$ERRVAL"
 }
